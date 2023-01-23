@@ -1,5 +1,5 @@
-function getRandomAttackDamage(damageMin, damageMax) {
-    return Math.floor(Math.random() * (damageMax - damageMin)) + damageMin;
+function getRandomValue(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
 const app = Vue.createApp({
@@ -24,21 +24,28 @@ const app = Vue.createApp({
     methods: {
         attackMonster() {
             this.currentRound++;
-            // random attack dmg between 5 and 12, inclusive
-            const attackDamage = getRandomAttackDamage(5, 12);
+            const attackDamage = getRandomValue(5, 12);
             this.monsterHealth -= attackDamage;
-            // turn-based, so monster attacks player >:-)
             this.attackPlayer();
         },
         attackPlayer() {
-            // monster hits a bit harder
-            const attackDamage = getRandomAttackDamage(8, 15);
+            const attackDamage = getRandomValue(8, 15);
             this.playerHealth -= attackDamage;
         },
         specialAttackMonster() {
             this.currentRound++;
-            const attackDamage = getRandomAttackDamage(10, 25);
+            const attackDamage = getRandomValue(10, 25);
             this.monsterHealth -= attackDamage;
+            this.attackPlayer();
+        },
+        healPlayer() {
+            this.currentRound++;
+            const healValue = getRandomValue(8, 20);
+            if (this.playerHealth + healValue > 100) {
+                this.playerHealth = 100;
+            } else {
+                this.playerHealth += healValue;
+            }
             this.attackPlayer();
         },
     }
