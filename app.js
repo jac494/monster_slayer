@@ -9,6 +9,7 @@ const app = Vue.createApp({
             monsterHealth: 100,
             currentRound: 0,
             winner: null,
+            logMessages: [],
         };
     },
     computed: {
@@ -61,16 +62,19 @@ const app = Vue.createApp({
             this.currentRound++;
             const attackDamage = getRandomValue(5, 12);
             this.monsterHealth -= attackDamage;
+            this.addLogMessage('player', 'attack', attackDamage);
             this.attackPlayer();
         },
         attackPlayer() {
             const attackDamage = getRandomValue(8, 15);
             this.playerHealth -= attackDamage;
+            this.addLogMessage('monster', 'attack', attackDamage);
         },
         specialAttackMonster() {
             this.currentRound++;
             const attackDamage = getRandomValue(10, 25);
             this.monsterHealth -= attackDamage;
+            this.addLogMessage('player', 'special-attack', attackDamage);
             this.attackPlayer();
         },
         healPlayer() {
@@ -81,13 +85,29 @@ const app = Vue.createApp({
             } else {
                 this.playerHealth += healValue;
             }
+            this.addLogMessage('player', 'heal', attackDamage);
             this.attackPlayer();
+        },
+        surrender() {
+            this.winner = 'monster';
         },
         initGame() {
             this.playerHealth = 100;
             this.monsterHealth = 100;
             this.winner = null;
             this.currentRound = 0;
+            this.logMessages = [];f
+        },
+        addLogMessage(who, what, value) {
+            // TIL .unshift() adds to the beginning of the array,
+            // as opposed to .push() that appends to the end
+            this.logMessages.unshift(
+                {
+                    actionBy: who,
+                    actionType: what,
+                    actionValue: value,
+                }
+            );
         },
     }
 });
